@@ -4,24 +4,31 @@
 echo "Start running script : Yevs_Project_Xut_Part1.sh"
 echo "This script generate diff_out data to compare MCF7(NT) vs MCF7(TR)"
 
-NTArray=`find . -name "*MCF7-NT*.fastq"`
-TRArray=`find . -name "*MCF7-TR*.fastq"`
+NTArray_1=`find . -name "*MCF7-NT*R1_001.fastq"`
+NTArray_2=`find . -name "*MCF7-NT*R2_001.fastq"`
+TRArray_1=`find . -name "*MCF7-TR*R1_001.fastq"`
+TRArray_2=`find . -name "*MCF7-TR*R1_002.fastq"`
 
-ntsorted=$(sort <<<"${NTArray[*]}")
-trsorted=$(sort <<<"${TRArray[*]}")
+ntsorted1=$(sort <<<"${NTArray_1[*]}")
+ntsorted2=$(sort <<<"${NTArray_2[*]}")
+trsorted1=$(sort <<<"${TRArray_1[*]}")
+trsorted2=$(sort <<<"${TRArray_2[*]}")
+
+echo "Step 1: Tophat"
+phaseStart=$(date +%s)
 
 i=$((1))
-for name in $ntsorted 
-do 
-	echo "NT-R_"$i": " $name
-	i=$((i+1))
-done
-
-i=$((1))
-for name in $trsorted 
-do 
-	echo "TR-R_"$i": " $name
-	i=$((i+1))
+for ((i=1;i<=$repCount;i++)) 
+do
+	sfileStart=$(date +%s)
+	tophat -p 8 -G /Homo_sapiens/Ensembl/GRCh37/Annotation/Genes/genes.gtf -o C1_R1_thout genome
+	#tophat -p 8 -G genes.gtf -o C1_R$i\_thout genome ${ntsorted1[i]} ${ntsorted2[i]}
+	#tophat -p 8 -G genes.gtf -o C1_R1_thout genome 7_MCF7-NT1_S7_L001_R1_001.fastq.gz 7_MCF7-NT1_S7_L001_R2_001.fastq.gz
+	sfileEnd=$(date +%s)
+	secs=$(($sfileEnd - $sfileStart))
+	echo $NTArray_1[i] " and 2 has been processed"
+	echo "Time Consume for this file: " 
+	printf '%dh:%dm:%ds\n' $(($secs/3600)) $(($secs%3600/60)) $(($secs%60))
 done
 
 repCount=$((i))
@@ -33,7 +40,7 @@ i=$((1))
 for name in $ntsorted 
 do
 	sfileStart=$(date +%s)
-	tophat -p 8 -G genes.gtf -o C1_R$i\_thout genome name
+	tophat -p 8 -G genes.gtf -o C1_R1\_thout genome name
 	i=$((i+1))
 	sfileEnd=$(date +%s)
 	secs=$(($sfileEnd - $sfileStart))
@@ -42,18 +49,18 @@ do
 	printf '%dh:%dm:%ds\n' $(($secs/3600)) $(($secs%3600/60)) $(($secs%60))
 done
 
-i=$((1))
-for name in $trsorted 
-do
-	sfileStart=$(date +%s)
-	tophat -p 8 -G genes.gtf -o C2_R$i\_thout genome name
-	i=$((i+1))
-	sfileEnd=$(date +%s)
-	secs=$(($sfileEnd - $sfileStart))
-	echo name "has been processed"
-	echo "Time Consume for this file: " 
-	printf '%dh:%dm:%ds\n' $(($secs/3600)) $(($secs%3600/60)) $(($secs%60))
-done
+# i=$((1))
+# for name in $trsorted 
+# do
+# 	sfileStart=$(date +%s)
+# 	tophat -p 8 -G genes.gtf -o C2_R$i\_thout genome name
+# 	i=$((i+1))
+# 	sfileEnd=$(date +%s)
+# 	secs=$(($sfileEnd - $sfileStart))
+# 	echo name "has been processed"
+# 	echo "Time Consume for this file: " 
+# 	printf '%dh:%dm:%ds\n' $(($secs/3600)) $(($secs%3600/60)) $(($secs%60))
+# done
 
 phaseEnd=$(date +%s)
 secs=$(($phaseStart - $phaseEnd))
