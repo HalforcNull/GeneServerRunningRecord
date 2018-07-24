@@ -9,10 +9,29 @@ NTArray_2=`find . -name "*MCF7-NT*R2_001.fastq"`
 TRArray_1=`find . -name "*MCF7-TR*R1_001.fastq"`
 TRArray_2=`find . -name "*MCF7-TR*R1_002.fastq"`
 
+
 ntsorted1=$(sort <<<"${NTArray_1[*]}")
 ntsorted2=$(sort <<<"${NTArray_2[*]}")
 trsorted1=$(sort <<<"${TRArray_1[*]}")
 trsorted2=$(sort <<<"${TRArray_2[*]}")
+
+
+i=$((1))
+for name in $ntsorted 
+do 
+	echo "NT-R_"$i": " $name
+	i=$((i+1))
+done
+
+i=$((1))
+for name in $trsorted 
+do 
+	echo "TR-R_"$i": " $name
+	i=$((i+1))
+done
+
+repCount=$((i))
+# nohup tophat -p 8 -G genes.gtf -o Sample_4_thout genome Sample_4_184A1-TR1/4_184A1-TR1_S4_L001_R1_001.fastq.gz Sample_4_184A1-TR1/4_184A1-TR1_S4_L001_R2_001.fastq.gz > 4.nohup &
 
 echo "Step 1: Tophat"
 phaseStart=$(date +%s)
