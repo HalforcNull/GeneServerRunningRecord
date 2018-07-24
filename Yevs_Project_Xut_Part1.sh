@@ -25,6 +25,7 @@ do
 done
 
 repCount=$((i))
+# nohup tophat -p 8 -G genes.gtf -o Sample_4_thout genome Sample_4_184A1-TR1/4_184A1-TR1_S4_L001_R1_001.fastq.gz Sample_4_184A1-TR1/4_184A1-TR1_S4_L001_R2_001.fastq.gz > 4.nohup &
 
 echo "Step 1: Tophat"
 phaseStart=$(date +%s)
